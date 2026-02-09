@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Rental Calculator - Superior Event Rentals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Roboto Condensed', sans-serif;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: #C2B399;
+            outline: none;
+            border-radius: 15px;
+            height: 10px;
+            width: 100%;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            background: #B78738;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            background: #B78738;
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .gradient-gold {
+            background: linear-gradient(135deg, #B78738 0%, #6D4007 100%);
+        }
+        .gradient-cream {
+            background: linear-gradient(135deg, #C2B399 0%, #FFFFFF 100%);
+        }
+        .product-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin: 0 auto 1rem;
+            border: 3px solid #B78738;
+        }
+    </style>
+</head>
+<body style="background: linear-gradient(to bottom right, #FFFFFF, #C2B399);">
+    <div class="min-h-screen py-8 px-4">
+        <!-- Logo/Header -->
+        <div class="max-w-5xl mx-auto mb-8 text-center">
+            <div class="inline-block bg-white px-8 py-4 rounded-full shadow-lg mb-4" style="border: 2px solid #B78738;">
+                <h1 class="text-2xl font-bold" style="color: #B78738;">Superior Event Rentals</h1>
+            </div>
+            <p style="color: #0D1425;" class="font-semibold">Thunder Bay's Wedding Rental Experts</p>
+        </div>
+
+        <!-- Main Calculator Card -->
+        <div class="max-w-5xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                <!-- Header Section -->
+                <div class="gradient-gold text-white p-8 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-3">Wedding Rental Calculator</h2>
+                    <p class="text-lg opacity-90">See exactly what you need in seconds</p>
+                </div>
+
+                <!-- Calculator Section -->
+                <div class="p-8">
+                    <!-- Guest Count Slider -->
+                    <div class="mb-10">
+                        <label class="block text-xl font-bold mb-6 text-center" style="color: #0D1425;">
+                            How many guests are attending? 
+                        </label>
+                        
+                        <div class="flex items-center gap-6 mb-4">
+                            <input 
+                                type="range" 
+                                id="guestSlider"
+                                min="25" 
+                                max="200" 
+                                step="5"
+                                value="100"
+                                class="flex-1"
+                            />
+                            <div class="gradient-gold text-white px-8 py-4 rounded-xl font-bold text-3xl min-w-[120px] text-center shadow-lg" id="guestDisplay">
+                                100
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between text-sm px-2" style="color: #6D4007;">
+                            <span>25 guests</span>
+                            <span>200 guests</span>
+                        </div>
+                    </div>
+
+                    <!-- Results Grid -->
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-center" style="color: #0D1425;">Your Recommended Rentals</h3>
+                        
+                        <div class="grid md:grid-cols-3 gap-6 mb-8">
+                            <!-- Tables Card -->
+                            <div class="gradient-cream rounded-xl p-6 text-center hover:shadow-lg transition" style="border: 2px solid #B78738;">
+                                <img src="table.png" alt="Round Tables" class="product-image">
+                                
+                                <div class="text-5xl font-bold mb-3" style="color: #B78738;" id="tableCount">13</div>
+                                <div class="text-xl font-bold mb-2" style="color: #0D1425;">Round Tables</div>
+                                <div class="text-sm mb-3" style="color: #6D4007;">60" diameter • Seats 8 guests</div>
+                                <div class="border-t pt-3 mt-3" style="border-color: #C2B399;">
+                                    <div class="text-sm" style="color: #6D4007;">$15 per table</div>
+                                    <div class="text-2xl font-bold mt-2" style="color: #0D1425;" id="tableCost">$195</div>
+                                </div>
+                            </div>
+
+                            <!-- Chairs Card -->
+                            <div class="gradient-cream rounded-xl p-6 text-center hover:shadow-lg transition" style="border: 2px solid #B78738;">
+                                <img src="chair.png" alt="Garden Chairs" class="product-image">
+                                
+                                <div class="text-5xl font-bold mb-3" style="color: #B78738;" id="chairCount">100</div>
+                                <div class="text-xl font-bold mb-2" style="color: #0D1425;">Garden Chairs</div>
+                                <div class="text-sm mb-3" style="color: #6D4007;">Elegant folding chairs</div>
+                                <div class="border-t pt-3 mt-3" style="border-color: #C2B399;">
+                                    <div class="text-sm" style="color: #6D4007;">$8 per chair</div>
+                                    <div class="text-2xl font-bold mt-2" style="color: #0D1425;" id="chairCost">$800</div>
+                                </div>
+                            </div>
+
+                            <!-- Dance Floor Card -->
+                            <div class="gradient-cream rounded-xl p-6 text-center hover:shadow-lg transition" style="border: 2px solid #B78738;">
+                                <img src="dancefloor.png" alt="Dance Floor" class="product-image">
+                                
+                                <div class="text-5xl font-bold mb-3" style="color: #B78738;" id="danceSize">15×15</div>
+                                <div class="text-xl font-bold mb-2" style="color: #0D1425;">Dance Floor</div>
+                                <div class="text-sm mb-3" style="color: #6D4007;"><span id="danceArea">225</span> sq ft • Subfloor included!</div>
+                                <div class="border-t pt-3 mt-3" style="border-color: #C2B399;">
+                                    <div class="text-sm" style="color: #6D4007;">Premium flooring</div>
+                                    <div class="text-2xl font-bold mt-2" style="color: #0D1425;" id="danceCost">$450</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Total Cost Banner -->
+                        <div class="gradient-gold rounded-xl p-6 text-white shadow-xl">
+                            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                                <div class="text-center md:text-left">
+                                    <div class="text-lg font-semibold mb-1">Estimated Total Package</div>
+                                    <div class="text-sm opacity-90">✓ Free delivery in Thunder Bay • ✓ Weekend included</div>
+                                </div>
+                                <div class="text-5xl font-bold" id="totalCost">$1,445</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- How We Calculated -->
+                    <div class="rounded-lg p-6 mb-8" style="background-color: #C2B399; border-left: 4px solid #B78738;">
+                        <div class="flex items-start gap-3">
+                            <div class="text-2xl">📊</div>
+                            <div>
+                                <h4 class="font-bold mb-2" style="color: #0D1425;">How We Calculated This:</h4>
+                                <div class="text-sm space-y-1" style="color: #6D4007;" id="explanation">
+                                    <div>• Tables: 13 tables × $15 = $195 (100 guests ÷ 8 per table)</div>
+                                    <div>• Chairs: 100 chairs × $8 = $800 (1 per guest)</div>
+                                    <div>• Dance Floor: 15×15 (225 sq ft) = $450 (based on 40% of guests dancing)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="tel:+18072764486" 
+                           class="flex-1 gradient-gold text-white text-center px-8 py-5 rounded-xl font-bold text-lg hover:opacity-90 transition shadow-lg">
+                            📞 Call Now: (807) 276-4486
+                        </a>
+                        <a href="https://superioreventrentals.ca" 
+                           class="flex-1 bg-white text-center px-8 py-5 rounded-xl font-bold text-lg hover:opacity-90 transition shadow-lg"
+                           style="color: #B78738; border: 3px solid #B78738;">
+                            🛒 Browse All Rentals
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="px-8 py-6 border-t text-center" style="background-color: #C2B399;">
+                    <p class="font-semibold mb-2" style="color: #0D1425;">Superior Event Rentals - Thunder Bay</p>
+                    <p class="text-sm" style="color: #6D4007;">Family-owned by Kyle & Katty • Mon-Fri: 10:00 AM - 6:00 PM</p>
+                    <p class="text-sm mt-2">
+                        <a href="mailto:[email protected]" style="color: #B78738;" class="hover:underline">[email protected]</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom spacing -->
+        <div class="h-12"></div>
+    </div>
+
+    <script>
+        const slider = document.getElementById('guestSlider');
+        const display = document.getElementById('guestDisplay');
+        const tableCount = document.getElementById('tableCount');
+        const chairCount = document.getElementById('chairCount');
+        const danceSize = document.getElementById('danceSize');
+        const danceArea = document.getElementById('danceArea');
+        const tableCost = document.getElementById('tableCost');
+        const chairCost = document.getElementById('chairCost');
+        const danceCost = document.getElementById('danceCost');
+        const totalCost = document.getElementById('totalCost');
+        const explanation = document.getElementById('explanation');
+
+        function calculate(guests) {
+            // Tables (8 per table)
+            const tables = Math.ceil(guests / 8);
+            const tableCostCalc = tables * 15;
+
+            // Chairs (1 per guest)
+            const chairs = guests;
+            const chairCostCalc = chairs * 8;
+
+            // Dance floor sizing and pricing
+            let danceFloorSize, danceFloorArea, danceFloorCost;
+            if (guests <= 75) {
+                danceFloorSize = "12×12";
+                danceFloorArea = 144;
+                danceFloorCost = 360;
+            } else if (guests <= 150) {
+                danceFloorSize = "15×15";
+                danceFloorArea = 225;
+                danceFloorCost = 450;
+            } else {
+                danceFloorSize = "18×18";
+                danceFloorArea = 324;
+                danceFloorCost = 650;
+            }
+
+            const total = tableCostCalc + chairCostCalc + danceFloorCost;
+
+            // Update all displays
+            display.textContent = guests;
+            tableCount.textContent = tables;
+            chairCount.textContent = chairs;
+            danceSize.textContent = danceFloorSize;
+            danceArea.textContent = danceFloorArea;
+            tableCost.textContent = `$${tableCostCalc}`;
+            chairCost.textContent = `$${chairCostCalc}`;
+            danceCost.textContent = `$${danceFloorCost}`;
+            totalCost.textContent = `$${total.toLocaleString()}`;
+
+            // Update explanation
+            explanation.innerHTML = `
+                <div>• Tables: ${tables} tables × $15 = $${tableCostCalc} (${guests} guests ÷ 8 per table)</div>
+                <div>• Chairs: ${chairs} chairs × $8 = $${chairCostCalc} (1 per guest)</div>
+                <div>• Dance Floor: ${danceFloorSize} (${danceFloorArea} sq ft) = $${danceFloorCost} (based on 40% of guests dancing)</div>
+            `;
+        }
+
+        // Update on slider change
+        slider.addEventListener('input', (e) => {
+            calculate(parseInt(e.target.value));
+        });
+
+        // Initial calculation
+        calculate(100);
+    </script>
+</body>
+</html>
