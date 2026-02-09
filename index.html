@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wedding Rental Calculator - Superior Event Rentals</title>
+    <title>Rental Calculator - Superior Event Rentals</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -95,7 +95,7 @@
             <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
                 <!-- Header Section -->
                 <div class="gradient-gold text-white p-8 text-center">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-3">Wedding Rental Calculator</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-3">Rental Calculator</h2>
                     <p class="text-lg opacity-90">Calculate what you need</p>
                 </div>
 
@@ -168,6 +168,19 @@
                                 </button>
                             </div>
                         </div>
+
+                        <!-- Dance Floor Toggle -->
+                        <div class="selector-group">
+                            <div class="selector-label">Dance Floor?</div>
+                            <div class="flex gap-2">
+                                <button class="option-btn active" id="btnDanceYes" onclick="toggleDanceFloor(true)">
+                                    Yes
+                                </button>
+                                <button class="option-btn" id="btnDanceNo" onclick="toggleDanceFloor(false)">
+                                    No
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Rectangle Table Note -->
@@ -179,7 +192,7 @@
                     <div class="mb-8">
                         <h3 class="text-2xl font-bold mb-6 text-center" style="color: #0D1425;">Your Recommended Rentals</h3>
                         
-                        <div class="grid md:grid-cols-3 gap-6 mb-8">
+                        <div class="grid md:grid-cols-3 gap-6 mb-8" id="resultsGrid">
                             <!-- Tables Card -->
                             <div class="gradient-cream rounded-xl p-6 text-center hover:shadow-lg transition" style="border: 2px solid #B78738;">
                                 <img src="table.png" alt="Tables" class="product-image" id="tableImage">
@@ -207,7 +220,7 @@
                             </div>
 
                             <!-- Dance Floor Card -->
-                            <div class="gradient-cream rounded-xl p-6 text-center hover:shadow-lg transition" style="border: 2px solid #B78738;">
+                            <div class="gradient-cream rounded-xl p-6 text-center hover:shadow-lg transition" style="border: 2px solid #B78738;" id="danceFloorCard">
                                 <img src="dancefloor.png" alt="Dance Floor" class="product-image">
                                 
                                 <div class="text-5xl font-bold mb-3" style="color: #B78738;" id="danceSize">15×15</div>
@@ -273,6 +286,7 @@
         let currentTableType = 'round';
         let currentGuestsPerTable = 8;
         let currentChairType = 'garden';
+        let includeDanceFloor = true;
 
         const slider = document.getElementById('guestSlider');
         const display = document.getElementById('guestDisplay');
@@ -294,6 +308,8 @@
         const rectangleNote = document.getElementById('rectangleNote');
         const tableImage = document.getElementById('tableImage');
         const chairImage = document.getElementById('chairImage');
+        const danceFloorCard = document.getElementById('danceFloorCard');
+        const resultsGrid = document.getElementById('resultsGrid');
 
         // Pricing
         const PRICES = {
@@ -360,6 +376,28 @@
             calculate();
         }
 
+        function toggleDanceFloor(include) {
+            includeDanceFloor = include;
+            
+            // Update button states
+            document.getElementById('btnDanceYes').classList.remove('active');
+            document.getElementById('btnDanceNo').classList.remove('active');
+            
+            if (include) {
+                document.getElementById('btnDanceYes').classList.add('active');
+                danceFloorCard.style.display = 'block';
+                resultsGrid.classList.remove('md:grid-cols-2');
+                resultsGrid.classList.add('md:grid-cols-3');
+            } else {
+                document.getElementById('btnDanceNo').classList.add('active');
+                danceFloorCard.style.display = 'none';
+                resultsGrid.classList.remove('md:grid-cols-3');
+                resultsGrid.classList.add('md:grid-cols-2');
+            }
+            
+            calculate();
+        }
+
         function calculate() {
             const guests = currentGuests;
             
@@ -373,26 +411,31 @@
             const chairPrice = PRICES.chairs[currentChairType];
             const chairCostCalc = chairs * chairPrice;
 
-            // Dance floor sizing and pricing (based on 60% of guests dancing, 5 sq ft per person)
-            const dancersNeeded = guests * 0.6 * 5;
-            
-            let danceFloorSize, danceFloorArea, panels, danceFloorCost;
-            
-            if (dancersNeeded <= 144) {
-                danceFloorSize = "12×12";
-                danceFloorArea = 144;
-                panels = 16; // 144 ÷ 9
-            } else if (dancersNeeded <= 225) {
-                danceFloorSize = "15×15";
-                danceFloorArea = 225;
-                panels = 25; // 225 ÷ 9
-            } else {
-                danceFloorSize = "18×18";
-                danceFloorArea = 324;
-                panels = 36; // 324 ÷ 9
+            let danceFloorCost = 0;
+            let panels = 0;
+            let danceFloorSize = '';
+            let danceFloorArea = 0;
+
+            if (includeDanceFloor) {
+                // Dance floor sizing and pricing (based on 60% of guests dancing, 5 sq ft per person)
+                const dancersNeeded = guests * 0.6 * 5;
+                
+                if (dancersNeeded <= 144) {
+                    danceFloorSize = "12×12";
+                    danceFloorArea = 144;
+                    panels = 16; // 144 ÷ 9
+                } else if (dancersNeeded <= 225) {
+                    danceFloorSize = "15×15";
+                    danceFloorArea = 225;
+                    panels = 25; // 225 ÷ 9
+                } else {
+                    danceFloorSize = "18×18";
+                    danceFloorArea = 324;
+                    panels = 36; // 324 ÷ 9
+                }
+                
+                danceFloorCost = panels * PRICES.danceFloor.panelPrice;
             }
-            
-            danceFloorCost = panels * PRICES.danceFloor.panelPrice;
 
             const total = tableCostCalc + chairCostCalc + danceFloorCost;
 
@@ -416,25 +459,36 @@
             display.textContent = guests;
             tableCount.textContent = tables;
             chairCount.textContent = chairs;
-            danceSize.textContent = danceFloorSize;
-            danceArea.textContent = danceFloorArea;
-            panelCount.textContent = panels;
             tableUnitPrice.textContent = `$${tablePrice} per table`;
             tableCost.textContent = `$${tableCostCalc}`;
             chairUnitPrice.textContent = `$${chairPrice.toFixed(2)} per chair`;
             chairCost.textContent = `$${chairCostCalc.toFixed(2)}`;
-            danceCost.textContent = `$${danceFloorCost}`;
+            
+            if (includeDanceFloor) {
+                danceSize.textContent = danceFloorSize;
+                danceArea.textContent = danceFloorArea;
+                panelCount.textContent = panels;
+                danceCost.textContent = `$${danceFloorCost}`;
+            }
+            
             totalCost.textContent = `$${total.toFixed(2).replace(/\.00$/, '')}`;
 
             // Update explanation
             const tableTypeText = currentTableType === 'round' ? '60" round tables' : '6ft rectangle tables';
             const chairTypeText = currentChairType === 'garden' ? 'garden chairs' : 'white fan back chairs';
             
-            explanation.innerHTML = `
+            let explanationHTML = `
                 <div>• Tables: ${tables} ${tableTypeText} × $${tablePrice} = $${tableCostCalc} (${guests} guests ÷ ${currentGuestsPerTable} per table)</div>
                 <div>• Chairs: ${chairs} ${chairTypeText} × $${chairPrice.toFixed(2)} = $${chairCostCalc.toFixed(2)} (1 per guest)</div>
-                <div>• Dance Floor: ${panels} panels × $${PRICES.danceFloor.panelPrice} = $${danceFloorCost} (${danceFloorSize} = ${danceFloorArea} sq ft, based on 60% of guests dancing)</div>
             `;
+            
+            if (includeDanceFloor) {
+                explanationHTML += `
+                    <div>• Dance Floor: ${panels} panels × $${PRICES.danceFloor.panelPrice} = $${danceFloorCost} (${danceFloorSize} = ${danceFloorArea} sq ft, based on 60% of guests dancing)</div>
+                `;
+            }
+            
+            explanation.innerHTML = explanationHTML;
         }
 
         // Update on slider change
