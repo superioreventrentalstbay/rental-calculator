@@ -52,6 +52,23 @@
             margin: 0 auto 1rem;
             border: 3px solid #B78738;
         }
+        .option-btn {
+            padding: 12px 24px;
+            border: 2px solid #C2B399;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        .option-btn:hover {
+            border-color: #B78738;
+        }
+        .option-btn.active {
+            background: #B78738;
+            color: white;
+            border-color: #B78738;
+        }
     </style>
 </head>
 <body style="background: linear-gradient(to bottom right, #FFFFFF, #C2B399);">
@@ -68,7 +85,7 @@
                 <!-- Calculator Section -->
                 <div class="p-8">
                     <!-- Guest Count Slider -->
-                    <div class="mb-10">
+                    <div class="mb-8">
                         <label class="block text-xl font-bold mb-6 text-center" style="color: #0D1425;">
                             How many guests are attending? 
                         </label>
@@ -94,6 +111,54 @@
                         </div>
                     </div>
 
+                    <!-- Table Type Selection -->
+                    <div class="mb-8">
+                        <label class="block text-xl font-bold mb-4 text-center" style="color: #0D1425;">
+                            What type of tables?
+                        </label>
+                        <div class="flex justify-center gap-4 mb-3">
+                            <button class="option-btn active" id="btnRound" onclick="selectTableType('round')">
+                                60" Round Tables
+                            </button>
+                            <button class="option-btn" id="btnRectangle" onclick="selectTableType('rectangle')">
+                                6ft Rectangle Tables
+                            </button>
+                        </div>
+                        <div id="rectangleNote" class="text-sm text-center px-4 py-3 rounded" style="background-color: #C2B399; color: #6D4007; display: none;">
+                            💡 <strong>Rectangle tables:</strong> Seat 6 guests (3 per side) or 8 guests (3 per side + 2 on ends)
+                        </div>
+                    </div>
+
+                    <!-- Guests Per Table Selection -->
+                    <div class="mb-8">
+                        <label class="block text-xl font-bold mb-4 text-center" style="color: #0D1425;">
+                            How many guests per table?
+                        </label>
+                        <div class="flex justify-center gap-4">
+                            <button class="option-btn" id="btn6" onclick="selectGuestsPerTable(6)">
+                                6 Guests
+                            </button>
+                            <button class="option-btn active" id="btn8" onclick="selectGuestsPerTable(8)">
+                                8 Guests
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Chair Type Selection -->
+                    <div class="mb-10">
+                        <label class="block text-xl font-bold mb-4 text-center" style="color: #0D1425;">
+                            What type of chairs?
+                        </label>
+                        <div class="flex justify-center gap-4">
+                            <button class="option-btn active" id="btnGarden" onclick="selectChairType('garden')">
+                                Garden Chairs
+                            </button>
+                            <button class="option-btn" id="btnFanback" onclick="selectChairType('fanback')">
+                                White Fan Back Chairs
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Results Grid -->
                     <div class="mb-8">
                         <h3 class="text-2xl font-bold mb-6 text-center" style="color: #0D1425;">Your Recommended Rentals</h3>
@@ -101,26 +166,26 @@
                         <div class="grid md:grid-cols-3 gap-6 mb-8">
                             <!-- Tables Card -->
                             <div class="gradient-cream rounded-xl p-6 text-center hover:shadow-lg transition" style="border: 2px solid #B78738;">
-                                <img src="table.png" alt="Round Tables" class="product-image">
+                                <img src="table.png" alt="Tables" class="product-image" id="tableImage">
                                 
                                 <div class="text-5xl font-bold mb-3" style="color: #B78738;" id="tableCount">13</div>
-                                <div class="text-xl font-bold mb-2" style="color: #0D1425;">Round Tables</div>
-                                <div class="text-sm mb-3" style="color: #6D4007;">60" diameter • Seats 8 guests</div>
+                                <div class="text-xl font-bold mb-2" style="color: #0D1425;" id="tableType">Round Tables</div>
+                                <div class="text-sm mb-3" style="color: #6D4007;" id="tableDescription">60" diameter • Seats 8 guests</div>
                                 <div class="border-t pt-3 mt-3" style="border-color: #C2B399;">
-                                    <div class="text-sm" style="color: #6D4007;">$15 per table</div>
-                                    <div class="text-2xl font-bold mt-2" style="color: #0D1425;" id="tableCost">$195</div>
+                                    <div class="text-sm" style="color: #6D4007;" id="tableUnitPrice">$18 per table</div>
+                                    <div class="text-2xl font-bold mt-2" style="color: #0D1425;" id="tableCost">$234</div>
                                 </div>
                             </div>
 
                             <!-- Chairs Card -->
                             <div class="gradient-cream rounded-xl p-6 text-center hover:shadow-lg transition" style="border: 2px solid #B78738;">
-                                <img src="chair.png" alt="Garden Chairs" class="product-image">
+                                <img src="chair.png" alt="Chairs" class="product-image" id="chairImage">
                                 
                                 <div class="text-5xl font-bold mb-3" style="color: #B78738;" id="chairCount">100</div>
-                                <div class="text-xl font-bold mb-2" style="color: #0D1425;">Garden Chairs</div>
+                                <div class="text-xl font-bold mb-2" style="color: #0D1425;" id="chairTypeName">Garden Chairs</div>
                                 <div class="text-sm mb-3" style="color: #6D4007;">Elegant folding chairs</div>
                                 <div class="border-t pt-3 mt-3" style="border-color: #C2B399;">
-                                    <div class="text-sm" style="color: #6D4007;">$8 per chair</div>
+                                    <div class="text-sm" style="color: #6D4007;" id="chairUnitPrice">$8 per chair</div>
                                     <div class="text-2xl font-bold mt-2" style="color: #0D1425;" id="chairCost">$800</div>
                                 </div>
                             </div>
@@ -131,10 +196,10 @@
                                 
                                 <div class="text-5xl font-bold mb-3" style="color: #B78738;" id="danceSize">15×15</div>
                                 <div class="text-xl font-bold mb-2" style="color: #0D1425;">Dance Floor</div>
-                                <div class="text-sm mb-3" style="color: #6D4007;"><span id="danceArea">225</span> sq ft • Subfloor included!</div>
+                                <div class="text-sm mb-3" style="color: #6D4007;"><span id="danceArea">225</span> sq ft • <span id="panelCount">25</span> panels</div>
                                 <div class="border-t pt-3 mt-3" style="border-color: #C2B399;">
-                                    <div class="text-sm" style="color: #6D4007;">Premium flooring</div>
-                                    <div class="text-2xl font-bold mt-2" style="color: #0D1425;" id="danceCost">$450</div>
+                                    <div class="text-sm" style="color: #6D4007;">$30 per panel</div>
+                                    <div class="text-2xl font-bold mt-2" style="color: #0D1425;" id="danceCost">$750</div>
                                 </div>
                             </div>
                         </div>
@@ -147,7 +212,7 @@
                                     <div class="text-sm opacity-90">✓ Free delivery in Thunder Bay</div>
                                     <div class="text-xs opacity-75 mt-2">* Estimate only. Does not include tax, damage waiver, or installation fees</div>
                                 </div>
-                                <div class="text-5xl font-bold" id="totalCost">$1,445</div>
+                                <div class="text-5xl font-bold" id="totalCost">$1,784</div>
                             </div>
                         </div>
                     </div>
@@ -159,9 +224,9 @@
                             <div>
                                 <h4 class="font-bold mb-2" style="color: #0D1425;">How We Calculated This:</h4>
                                 <div class="text-sm space-y-1" style="color: #6D4007;" id="explanation">
-                                    <div>• Tables: 13 tables × $15 = $195 (100 guests ÷ 8 per table)</div>
+                                    <div>• Tables: 13 tables × $18 = $234 (100 guests ÷ 8 per table)</div>
                                     <div>• Chairs: 100 chairs × $8 = $800 (1 per guest)</div>
-                                    <div>• Dance Floor: 15×15 (225 sq ft) = $450 (based on 60% of guests dancing)</div>
+                                    <div>• Dance Floor: 25 panels × $30 = $750 (15×15 = 225 sq ft, based on 60% of guests dancing)</div>
                                 </div>
                             </div>
                         </div>
@@ -188,49 +253,148 @@
     </div>
 
     <script>
+        let currentGuests = 100;
+        let currentTableType = 'round';
+        let currentGuestsPerTable = 8;
+        let currentChairType = 'garden';
+
         const slider = document.getElementById('guestSlider');
         const display = document.getElementById('guestDisplay');
         const tableCount = document.getElementById('tableCount');
         const chairCount = document.getElementById('chairCount');
         const danceSize = document.getElementById('danceSize');
         const danceArea = document.getElementById('danceArea');
+        const panelCount = document.getElementById('panelCount');
         const tableCost = document.getElementById('tableCost');
         const chairCost = document.getElementById('chairCost');
         const danceCost = document.getElementById('danceCost');
         const totalCost = document.getElementById('totalCost');
         const explanation = document.getElementById('explanation');
+        const tableType = document.getElementById('tableType');
+        const tableDescription = document.getElementById('tableDescription');
+        const tableUnitPrice = document.getElementById('tableUnitPrice');
+        const chairTypeName = document.getElementById('chairTypeName');
+        const chairUnitPrice = document.getElementById('chairUnitPrice');
+        const rectangleNote = document.getElementById('rectangleNote');
+        const tableImage = document.getElementById('tableImage');
+        const chairImage = document.getElementById('chairImage');
 
-        function calculate(guests) {
-            // Tables (8 per table)
-            const tables = Math.ceil(guests / 8);
-            const tableCostCalc = tables * 15;
+        // Pricing
+        const PRICES = {
+            tables: {
+                round: 18,
+                rectangle: 15
+            },
+            chairs: {
+                garden: 8,
+                fanback: 4.50
+            },
+            danceFloor: {
+                panelPrice: 30,
+                panelSize: 9 // 3x3 ft = 9 sq ft per panel
+            }
+        };
+
+        function selectTableType(type) {
+            currentTableType = type;
+            
+            // Update button states
+            document.getElementById('btnRound').classList.remove('active');
+            document.getElementById('btnRectangle').classList.remove('active');
+            
+            if (type === 'round') {
+                document.getElementById('btnRound').classList.add('active');
+                rectangleNote.style.display = 'none';
+                tableImage.src = 'table.png';
+            } else {
+                document.getElementById('btnRectangle').classList.add('active');
+                rectangleNote.style.display = 'block';
+                tableImage.src = 'table-rectangle.png';
+            }
+            
+            calculate();
+        }
+
+        function selectGuestsPerTable(num) {
+            currentGuestsPerTable = num;
+            
+            // Update button states
+            document.getElementById('btn6').classList.remove('active');
+            document.getElementById('btn8').classList.remove('active');
+            document.getElementById('btn' + num).classList.add('active');
+            
+            calculate();
+        }
+
+        function selectChairType(type) {
+            currentChairType = type;
+            
+            // Update button states
+            document.getElementById('btnGarden').classList.remove('active');
+            document.getElementById('btnFanback').classList.remove('active');
+            
+            if (type === 'garden') {
+                document.getElementById('btnGarden').classList.add('active');
+                chairImage.src = 'chair.png';
+            } else {
+                document.getElementById('btnFanback').classList.add('active');
+                chairImage.src = 'chair-fanback.png';
+            }
+            
+            calculate();
+        }
+
+        function calculate() {
+            const guests = currentGuests;
+            
+            // Tables (based on guests per table selection)
+            const tables = Math.ceil(guests / currentGuestsPerTable);
+            const tablePrice = PRICES.tables[currentTableType];
+            const tableCostCalc = tables * tablePrice;
 
             // Chairs (1 per guest)
             const chairs = guests;
-            const chairCostCalc = chairs * 8;
+            const chairPrice = PRICES.chairs[currentChairType];
+            const chairCostCalc = chairs * chairPrice;
 
             // Dance floor sizing and pricing (based on 60% of guests dancing, 5 sq ft per person)
-            // 60% dancing = guests * 0.6 * 5 sq ft
             const dancersNeeded = guests * 0.6 * 5;
             
-            let danceFloorSize, danceFloorArea, danceFloorCost;
+            let danceFloorSize, danceFloorArea, panels, danceFloorCost;
             
             if (dancersNeeded <= 144) {
                 danceFloorSize = "12×12";
                 danceFloorArea = 144;
-                danceFloorCost = 360;
+                panels = 16; // 144 ÷ 9
             } else if (dancersNeeded <= 225) {
                 danceFloorSize = "15×15";
                 danceFloorArea = 225;
-                danceFloorCost = 450;
+                panels = 25; // 225 ÷ 9
             } else {
-                // Max size is 18×18
                 danceFloorSize = "18×18";
                 danceFloorArea = 324;
-                danceFloorCost = 650;
+                panels = 36; // 324 ÷ 9
             }
+            
+            danceFloorCost = panels * PRICES.danceFloor.panelPrice;
 
             const total = tableCostCalc + chairCostCalc + danceFloorCost;
+
+            // Update table type display
+            if (currentTableType === 'round') {
+                tableType.textContent = 'Round Tables';
+                tableDescription.textContent = `60" diameter • Seats ${currentGuestsPerTable} guests`;
+            } else {
+                tableType.textContent = 'Rectangle Tables';
+                tableDescription.textContent = `6ft banquet • Seats ${currentGuestsPerTable} guests`;
+            }
+
+            // Update chair type display
+            if (currentChairType === 'garden') {
+                chairTypeName.textContent = 'Garden Chairs';
+            } else {
+                chairTypeName.textContent = 'White Fan Back Chairs';
+            }
 
             // Update all displays
             display.textContent = guests;
@@ -238,26 +402,33 @@
             chairCount.textContent = chairs;
             danceSize.textContent = danceFloorSize;
             danceArea.textContent = danceFloorArea;
+            panelCount.textContent = panels;
+            tableUnitPrice.textContent = `$${tablePrice} per table`;
             tableCost.textContent = `$${tableCostCalc}`;
-            chairCost.textContent = `$${chairCostCalc}`;
+            chairUnitPrice.textContent = `$${chairPrice.toFixed(2)} per chair`;
+            chairCost.textContent = `$${chairCostCalc.toFixed(2)}`;
             danceCost.textContent = `$${danceFloorCost}`;
-            totalCost.textContent = `$${total.toLocaleString()}`;
+            totalCost.textContent = `$${total.toFixed(2).replace(/\.00$/, '')}`;
 
             // Update explanation
+            const tableTypeText = currentTableType === 'round' ? '60" round tables' : '6ft rectangle tables';
+            const chairTypeText = currentChairType === 'garden' ? 'garden chairs' : 'white fan back chairs';
+            
             explanation.innerHTML = `
-                <div>• Tables: ${tables} tables × $15 = $${tableCostCalc} (${guests} guests ÷ 8 per table)</div>
-                <div>• Chairs: ${chairs} chairs × $8 = $${chairCostCalc} (1 per guest)</div>
-                <div>• Dance Floor: ${danceFloorSize} (${danceFloorArea} sq ft) = $${danceFloorCost} (based on 60% of guests dancing)</div>
+                <div>• Tables: ${tables} ${tableTypeText} × $${tablePrice} = $${tableCostCalc} (${guests} guests ÷ ${currentGuestsPerTable} per table)</div>
+                <div>• Chairs: ${chairs} ${chairTypeText} × $${chairPrice.toFixed(2)} = $${chairCostCalc.toFixed(2)} (1 per guest)</div>
+                <div>• Dance Floor: ${panels} panels × $${PRICES.danceFloor.panelPrice} = $${danceFloorCost} (${danceFloorSize} = ${danceFloorArea} sq ft, based on 60% of guests dancing)</div>
             `;
         }
 
         // Update on slider change
         slider.addEventListener('input', (e) => {
-            calculate(parseInt(e.target.value));
+            currentGuests = parseInt(e.target.value);
+            calculate();
         });
 
         // Initial calculation
-        calculate(100);
+        calculate();
     </script>
 </body>
 </html>
