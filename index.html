@@ -53,13 +53,14 @@
             border: 3px solid #B78738;
         }
         .option-btn {
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: 2px solid #C2B399;
             border-radius: 8px;
             background: white;
             cursor: pointer;
             transition: all 0.3s;
             font-weight: 600;
+            font-size: 14px;
         }
         .option-btn:hover {
             border-color: #B78738;
@@ -68,6 +69,22 @@
             background: #B78738;
             color: white;
             border-color: #B78738;
+        }
+        .selector-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .selector-label {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        @media (max-width: 768px) {
+            .selectors-row {
+                flex-direction: column !important;
+                gap: 20px !important;
+            }
         }
     </style>
 </head>
@@ -85,7 +102,7 @@
                 <!-- Calculator Section -->
                 <div class="p-8">
                     <!-- Guest Count Slider -->
-                    <div class="mb-8">
+                    <div class="mb-10">
                         <label class="block text-xl font-bold mb-6 text-center" style="color: #0D1425;">
                             How many guests are attending? 
                         </label>
@@ -111,52 +128,51 @@
                         </div>
                     </div>
 
-                    <!-- Table Type Selection -->
-                    <div class="mb-8">
-                        <label class="block text-xl font-bold mb-4 text-center" style="color: #0D1425;">
-                            What type of tables?
-                        </label>
-                        <div class="flex justify-center gap-4 mb-3">
-                            <button class="option-btn active" id="btnRound" onclick="selectTableType('round')">
-                                60" Round Tables
-                            </button>
-                            <button class="option-btn" id="btnRectangle" onclick="selectTableType('rectangle')">
-                                6ft Rectangle Tables
-                            </button>
+                    <!-- All Selectors in One Row -->
+                    <div class="selectors-row flex justify-center gap-8 mb-8" style="color: #0D1425;">
+                        <!-- Table Type -->
+                        <div class="selector-group">
+                            <div class="selector-label">Table Type</div>
+                            <div class="flex gap-2">
+                                <button class="option-btn active" id="btnRound" onclick="selectTableType('round')">
+                                    60" Round
+                                </button>
+                                <button class="option-btn" id="btnRectangle" onclick="selectTableType('rectangle')">
+                                    6ft Rectangle
+                                </button>
+                            </div>
                         </div>
-                        <div id="rectangleNote" class="text-sm text-center px-4 py-3 rounded" style="background-color: #C2B399; color: #6D4007; display: none;">
-                            💡 <strong>Rectangle tables:</strong> Seat 6 guests (3 per side) or 8 guests (3 per side + 2 on ends)
+
+                        <!-- Guests Per Table -->
+                        <div class="selector-group">
+                            <div class="selector-label">Guests/Table</div>
+                            <div class="flex gap-2">
+                                <button class="option-btn" id="btn6" onclick="selectGuestsPerTable(6)">
+                                    6 Guests
+                                </button>
+                                <button class="option-btn active" id="btn8" onclick="selectGuestsPerTable(8)">
+                                    8 Guests
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Chair Type -->
+                        <div class="selector-group">
+                            <div class="selector-label">Chair Type</div>
+                            <div class="flex gap-2">
+                                <button class="option-btn active" id="btnGarden" onclick="selectChairType('garden')">
+                                    Garden
+                                </button>
+                                <button class="option-btn" id="btnFanback" onclick="selectChairType('fanback')">
+                                    Fan Back
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Guests Per Table Selection -->
-                    <div class="mb-8">
-                        <label class="block text-xl font-bold mb-4 text-center" style="color: #0D1425;">
-                            How many guests per table?
-                        </label>
-                        <div class="flex justify-center gap-4">
-                            <button class="option-btn" id="btn6" onclick="selectGuestsPerTable(6)">
-                                6 Guests
-                            </button>
-                            <button class="option-btn active" id="btn8" onclick="selectGuestsPerTable(8)">
-                                8 Guests
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Chair Type Selection -->
-                    <div class="mb-10">
-                        <label class="block text-xl font-bold mb-4 text-center" style="color: #0D1425;">
-                            What type of chairs?
-                        </label>
-                        <div class="flex justify-center gap-4">
-                            <button class="option-btn active" id="btnGarden" onclick="selectChairType('garden')">
-                                Garden Chairs
-                            </button>
-                            <button class="option-btn" id="btnFanback" onclick="selectChairType('fanback')">
-                                White Fan Back Chairs
-                            </button>
-                        </div>
+                    <!-- Rectangle Table Note -->
+                    <div id="rectangleNote" class="text-sm text-center px-4 py-3 rounded mb-8" style="background-color: #C2B399; color: #6D4007; display: none;">
+                        💡 <strong>Rectangle tables:</strong> Seat 6 guests (3 per side) or 8 guests (3 per side + 2 on ends)
                     </div>
 
                     <!-- Results Grid -->
