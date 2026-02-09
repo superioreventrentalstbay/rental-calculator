@@ -78,7 +78,7 @@
                                 type="range" 
                                 id="guestSlider"
                                 min="25" 
-                                max="200" 
+                                max="150" 
                                 step="5"
                                 value="100"
                                 class="flex-1"
@@ -90,7 +90,7 @@
                         
                         <div class="flex justify-between text-sm px-2" style="color: #6D4007;">
                             <span>25 guests</span>
-                            <span>200 guests</span>
+                            <span>150 guests</span>
                         </div>
                     </div>
 
@@ -160,7 +160,7 @@
                                 <div class="text-sm space-y-1" style="color: #6D4007;" id="explanation">
                                     <div>• Tables: 13 tables × $15 = $195 (100 guests ÷ 8 per table)</div>
                                     <div>• Chairs: 100 chairs × $8 = $800 (1 per guest)</div>
-                                    <div>• Dance Floor: 15×15 (225 sq ft) = $450 (based on 40% of guests dancing)</div>
+                                    <div>• Dance Floor: 15×15 (225 sq ft) = $450 (based on 60% of guests dancing)</div>
                                 </div>
                             </div>
                         </div>
@@ -208,17 +208,22 @@
             const chairs = guests;
             const chairCostCalc = chairs * 8;
 
-            // Dance floor sizing and pricing
+            // Dance floor sizing and pricing (based on 60% of guests dancing, 5 sq ft per person)
+            // 60% dancing = guests * 0.6 * 5 sq ft
+            const dancersNeeded = guests * 0.6 * 5;
+            
             let danceFloorSize, danceFloorArea, danceFloorCost;
-            if (guests <= 75) {
+            
+            if (dancersNeeded <= 144) {
                 danceFloorSize = "12×12";
                 danceFloorArea = 144;
                 danceFloorCost = 360;
-            } else if (guests <= 150) {
+            } else if (dancersNeeded <= 225) {
                 danceFloorSize = "15×15";
                 danceFloorArea = 225;
                 danceFloorCost = 450;
             } else {
+                // Max size is 18×18
                 danceFloorSize = "18×18";
                 danceFloorArea = 324;
                 danceFloorCost = 650;
@@ -241,7 +246,7 @@
             explanation.innerHTML = `
                 <div>• Tables: ${tables} tables × $15 = $${tableCostCalc} (${guests} guests ÷ 8 per table)</div>
                 <div>• Chairs: ${chairs} chairs × $8 = $${chairCostCalc} (1 per guest)</div>
-                <div>• Dance Floor: ${danceFloorSize} (${danceFloorArea} sq ft) = $${danceFloorCost} (based on 40% of guests dancing)</div>
+                <div>• Dance Floor: ${danceFloorSize} (${danceFloorArea} sq ft) = $${danceFloorCost} (based on 60% of guests dancing)</div>
             `;
         }
 
