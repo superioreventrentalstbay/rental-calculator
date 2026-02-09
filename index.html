@@ -233,15 +233,42 @@
                             </div>
                         </div>
 
+                        <!-- Cost Breakdown -->
+                        <div class="bg-white rounded-xl p-6 mb-6 border-2" style="border-color: #C2B399;">
+                            <h4 class="font-bold mb-4 text-center" style="color: #0D1425;">Cost Breakdown</h4>
+                            <div class="space-y-2 text-sm" style="color: #6D4007;">
+                                <div class="flex justify-between">
+                                    <span>Subtotal (Rentals):</span>
+                                    <span class="font-semibold" id="subtotal">$1,784.00</span>
+                                </div>
+                                <div class="flex justify-between" id="installationRow">
+                                    <span>Installation (Dance Floor):</span>
+                                    <span class="font-semibold">$150.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Damage Waiver (10% on rentals):</span>
+                                    <span class="font-semibold" id="damageWaiver">$178.40</span>
+                                </div>
+                                <div class="flex justify-between border-t pt-2" style="border-color: #C2B399;">
+                                    <span>Subtotal Before Tax:</span>
+                                    <span class="font-semibold" id="beforeTax">$2,112.40</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Tax (13%):</span>
+                                    <span class="font-semibold" id="tax">$274.61</span>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Total Cost Banner -->
                         <div class="gradient-gold rounded-xl p-6 text-white shadow-xl">
                             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                                 <div class="text-center md:text-left">
-                                    <div class="text-lg font-semibold mb-1">Estimated Total Package</div>
+                                    <div class="text-lg font-semibold mb-1">Estimated Total</div>
                                     <div class="text-sm opacity-90">✓ Free delivery in Thunder Bay</div>
-                                    <div class="text-xs opacity-75 mt-2">* Estimate only. Does not include tax, damage waiver, or installation fees</div>
+                                    <div class="text-xs opacity-75 mt-2">* This is an estimate. Final quote may vary based on specific requirements.</div>
                                 </div>
-                                <div class="text-5xl font-bold" id="totalCost">$1,784</div>
+                                <div class="text-5xl font-bold" id="totalCost">$2,387</div>
                             </div>
                         </div>
                     </div>
@@ -310,8 +337,13 @@
         const chairImage = document.getElementById('chairImage');
         const danceFloorCard = document.getElementById('danceFloorCard');
         const resultsGrid = document.getElementById('resultsGrid');
+        const subtotalEl = document.getElementById('subtotal');
+        const damageWaiverEl = document.getElementById('damageWaiver');
+        const beforeTaxEl = document.getElementById('beforeTax');
+        const taxEl = document.getElementById('tax');
+        const installationRow = document.getElementById('installationRow');
 
-        // Pricing
+        // Pricing and rates
         const PRICES = {
             tables: {
                 round: 18,
@@ -323,8 +355,11 @@
             },
             danceFloor: {
                 panelPrice: 30,
-                panelSize: 9 // 3x3 ft = 9 sq ft per panel
-            }
+                panelSize: 9, // 3x3 ft = 9 sq ft per panel
+                installation: 150
+            },
+            taxRate: 0.13, // 13%
+            damageWaiverRate: 0.10 // 10%
         };
 
         function selectTableType(type) {
@@ -386,11 +421,13 @@
             if (include) {
                 document.getElementById('btnDanceYes').classList.add('active');
                 danceFloorCard.style.display = 'block';
+                installationRow.style.display = 'flex';
                 resultsGrid.classList.remove('md:grid-cols-2');
                 resultsGrid.classList.add('md:grid-cols-3');
             } else {
                 document.getElementById('btnDanceNo').classList.add('active');
                 danceFloorCard.style.display = 'none';
+                installationRow.style.display = 'none';
                 resultsGrid.classList.remove('md:grid-cols-3');
                 resultsGrid.classList.add('md:grid-cols-2');
             }
@@ -415,6 +452,7 @@
             let panels = 0;
             let danceFloorSize = '';
             let danceFloorArea = 0;
+            let installation = 0;
 
             if (includeDanceFloor) {
                 // Dance floor sizing and pricing (based on 60% of guests dancing, 5 sq ft per person)
@@ -423,21 +461,27 @@
                 if (dancersNeeded <= 144) {
                     danceFloorSize = "12×12";
                     danceFloorArea = 144;
-                    panels = 16; // 144 ÷ 9
+                    panels = 16;
                 } else if (dancersNeeded <= 225) {
                     danceFloorSize = "15×15";
                     danceFloorArea = 225;
-                    panels = 25; // 225 ÷ 9
+                    panels = 25;
                 } else {
                     danceFloorSize = "18×18";
                     danceFloorArea = 324;
-                    panels = 36; // 324 ÷ 9
+                    panels = 36;
                 }
                 
                 danceFloorCost = panels * PRICES.danceFloor.panelPrice;
+                installation = PRICES.danceFloor.installation;
             }
 
-            const total = tableCostCalc + chairCostCalc + danceFloorCost;
+            // Calculate totals
+            const rentalSubtotal = tableCostCalc + chairCostCalc + danceFloorCost;
+            const damageWaiver = rentalSubtotal * PRICES.damageWaiverRate;
+            const beforeTax = rentalSubtotal + installation + damageWaiver;
+            const tax = beforeTax * PRICES.taxRate;
+            const total = beforeTax + tax;
 
             // Update table type display
             if (currentTableType === 'round') {
@@ -471,7 +515,12 @@
                 danceCost.textContent = `$${danceFloorCost}`;
             }
             
-            totalCost.textContent = `$${total.toFixed(2).replace(/\.00$/, '')}`;
+            // Update breakdown
+            subtotalEl.textContent = `$${rentalSubtotal.toFixed(2)}`;
+            damageWaiverEl.textContent = `$${damageWaiver.toFixed(2)}`;
+            beforeTaxEl.textContent = `$${beforeTax.toFixed(2)}`;
+            taxEl.textContent = `$${tax.toFixed(2)}`;
+            totalCost.textContent = `$${Math.round(total).toLocaleString()}`;
 
             // Update explanation
             const tableTypeText = currentTableType === 'round' ? '60" round tables' : '6ft rectangle tables';
@@ -485,8 +534,14 @@
             if (includeDanceFloor) {
                 explanationHTML += `
                     <div>• Dance Floor: ${panels} panels × $${PRICES.danceFloor.panelPrice} = $${danceFloorCost} (${danceFloorSize} = ${danceFloorArea} sq ft, based on 60% of guests dancing)</div>
+                    <div>• Installation: $${installation} (dance floor setup)</div>
                 `;
             }
+            
+            explanationHTML += `
+                <div>• Damage Waiver: ${(PRICES.damageWaiverRate * 100).toFixed(0)}% on rentals = $${damageWaiver.toFixed(2)}</div>
+                <div>• Tax: ${(PRICES.taxRate * 100).toFixed(0)}% = $${tax.toFixed(2)}</div>
+            `;
             
             explanation.innerHTML = explanationHTML;
         }
