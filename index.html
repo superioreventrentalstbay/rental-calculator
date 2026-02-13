@@ -130,6 +130,19 @@
 
                     <!-- All Selectors in One Row -->
                     <div class="selectors-row flex justify-center gap-8 mb-8" style="color: #0D1425;">
+                        <!-- Guests Per Table -->
+                        <div class="selector-group" id="guestsPerTableGroup">
+                            <div class="selector-label">Guests/Table</div>
+                            <div class="flex gap-2">
+                                <button class="option-btn" id="btn6" onclick="selectGuestsPerTable(6)">
+                                    6 Guests
+                                </button>
+                                <button class="option-btn active" id="btn8" onclick="selectGuestsPerTable(8)">
+                                    8 Guests
+                                </button>
+                            </div>
+                        </div>
+
                         <!-- Table Type -->
                         <div class="selector-group">
                             <div class="selector-label">Table Type</div>
@@ -142,19 +155,6 @@
                                 </button>
                                 <button class="option-btn" id="btnNoTables" onclick="selectTableType('none')">
                                     None
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Guests Per Table -->
-                        <div class="selector-group" id="guestsPerTableGroup">
-                            <div class="selector-label">Guests/Table</div>
-                            <div class="flex gap-2">
-                                <button class="option-btn" id="btn6" onclick="selectGuestsPerTable(6)">
-                                    6 Guests
-                                </button>
-                                <button class="option-btn active" id="btn8" onclick="selectGuestsPerTable(8)">
-                                    8 Guests
                                 </button>
                             </div>
                         </div>
