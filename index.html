@@ -140,11 +140,14 @@
                                 <button class="option-btn" id="btnRectangle" onclick="selectTableType('rectangle')">
                                     6ft Rectangle
                                 </button>
+                                <button class="option-btn" id="btnNoTables" onclick="selectTableType('none')">
+                                    None
+                                </button>
                             </div>
                         </div>
 
                         <!-- Guests Per Table -->
-                        <div class="selector-group">
+                        <div class="selector-group" id="guestsPerTableGroup">
                             <div class="selector-label">Guests/Table</div>
                             <div class="flex gap-2">
                                 <button class="option-btn" id="btn6" onclick="selectGuestsPerTable(6)">
@@ -165,6 +168,9 @@
                                 </button>
                                 <button class="option-btn" id="btnFanback" onclick="selectChairType('fanback')">
                                     Fan Back
+                                </button>
+                                <button class="option-btn" id="btnNoChairs" onclick="selectChairType('none')">
+                                    None
                                 </button>
                             </div>
                         </div>
@@ -368,15 +374,28 @@
             // Update button states
             document.getElementById('btnRound').classList.remove('active');
             document.getElementById('btnRectangle').classList.remove('active');
+            document.getElementById('btnNoTables').classList.remove('active');
+            
+            const guestsPerTableGroup = document.getElementById('guestsPerTableGroup');
+            const tableCard = document.querySelector('#resultsGrid > div:first-child');
             
             if (type === 'round') {
                 document.getElementById('btnRound').classList.add('active');
                 rectangleNote.style.display = 'none';
                 tableImage.src = 'table.png';
-            } else {
+                guestsPerTableGroup.style.display = 'flex';
+                tableCard.style.display = 'block';
+            } else if (type === 'rectangle') {
                 document.getElementById('btnRectangle').classList.add('active');
                 rectangleNote.style.display = 'block';
                 tableImage.src = 'table-rectangle.png';
+                guestsPerTableGroup.style.display = 'flex';
+                tableCard.style.display = 'block';
+            } else {
+                document.getElementById('btnNoTables').classList.add('active');
+                rectangleNote.style.display = 'none';
+                guestsPerTableGroup.style.display = 'none';
+                tableCard.style.display = 'none';
             }
             
             calculate();
@@ -399,13 +418,21 @@
             // Update button states
             document.getElementById('btnGarden').classList.remove('active');
             document.getElementById('btnFanback').classList.remove('active');
+            document.getElementById('btnNoChairs').classList.remove('active');
+            
+            const chairCard = document.querySelector('#resultsGrid > div:nth-child(2)');
             
             if (type === 'garden') {
                 document.getElementById('btnGarden').classList.add('active');
                 chairImage.src = 'chair.png';
-            } else {
+                chairCard.style.display = 'block';
+            } else if (type === 'fanback') {
                 document.getElementById('btnFanback').classList.add('active');
                 chairImage.src = 'chair-fanback.png';
+                chairCard.style.display = 'block';
+            } else {
+                document.getElementById('btnNoChairs').classList.add('active');
+                chairCard.style.display = 'none';
             }
             
             calculate();
@@ -439,14 +466,22 @@
             const guests = currentGuests;
             
             // Tables (based on guests per table selection)
-            const tables = Math.ceil(guests / currentGuestsPerTable);
-            const tablePrice = PRICES.tables[currentTableType];
-            const tableCostCalc = tables * tablePrice;
+            let tables = 0;
+            let tableCostCalc = 0;
+            if (currentTableType !== 'none') {
+                tables = Math.ceil(guests / currentGuestsPerTable);
+                const tablePrice = PRICES.tables[currentTableType];
+                tableCostCalc = tables * tablePrice;
+            }
 
             // Chairs (1 per guest)
-            const chairs = guests;
-            const chairPrice = PRICES.chairs[currentChairType];
-            const chairCostCalc = chairs * chairPrice;
+            let chairs = 0;
+            let chairCostCalc = 0;
+            if (currentChairType !== 'none') {
+                chairs = guests;
+                const chairPrice = PRICES.chairs[currentChairType];
+                chairCostCalc = chairs * chairPrice;
+            }
 
             let danceFloorCost = 0;
             let panels = 0;
@@ -487,26 +522,36 @@
             if (currentTableType === 'round') {
                 tableType.textContent = 'Round Tables';
                 tableDescription.textContent = `60" diameter • Seats ${currentGuestsPerTable} guests`;
-            } else {
+                const tablePrice = PRICES.tables[currentTableType];
+                tableCount.textContent = tables;
+                tableUnitPrice.textContent = `$${tablePrice} per table`;
+                tableCost.textContent = `$${tableCostCalc}`;
+            } else if (currentTableType === 'rectangle') {
                 tableType.textContent = 'Rectangle Tables';
                 tableDescription.textContent = `6ft banquet • Seats ${currentGuestsPerTable} guests`;
+                const tablePrice = PRICES.tables[currentTableType];
+                tableCount.textContent = tables;
+                tableUnitPrice.textContent = `$${tablePrice} per table`;
+                tableCost.textContent = `$${tableCostCalc}`;
             }
 
             // Update chair type display
             if (currentChairType === 'garden') {
                 chairTypeName.textContent = 'Garden Chairs';
-            } else {
+                const chairPrice = PRICES.chairs[currentChairType];
+                chairCount.textContent = chairs;
+                chairUnitPrice.textContent = `$${chairPrice.toFixed(2)} per chair`;
+                chairCost.textContent = `$${chairCostCalc.toFixed(2)}`;
+            } else if (currentChairType === 'fanback') {
                 chairTypeName.textContent = 'White Fan Back Chairs';
+                const chairPrice = PRICES.chairs[currentChairType];
+                chairCount.textContent = chairs;
+                chairUnitPrice.textContent = `$${chairPrice.toFixed(2)} per chair`;
+                chairCost.textContent = `$${chairCostCalc.toFixed(2)}`;
             }
 
             // Update all displays
             display.textContent = guests;
-            tableCount.textContent = tables;
-            chairCount.textContent = chairs;
-            tableUnitPrice.textContent = `$${tablePrice} per table`;
-            tableCost.textContent = `$${tableCostCalc}`;
-            chairUnitPrice.textContent = `$${chairPrice.toFixed(2)} per chair`;
-            chairCost.textContent = `$${chairCostCalc.toFixed(2)}`;
             
             if (includeDanceFloor) {
                 danceSize.textContent = danceFloorSize;
@@ -526,10 +571,21 @@
             const tableTypeText = currentTableType === 'round' ? '60" round tables' : '6ft rectangle tables';
             const chairTypeText = currentChairType === 'garden' ? 'garden chairs' : 'white fan back chairs';
             
-            let explanationHTML = `
-                <div>• Tables: ${tables} ${tableTypeText} × $${tablePrice} = $${tableCostCalc} (${guests} guests ÷ ${currentGuestsPerTable} per table)</div>
-                <div>• Chairs: ${chairs} ${chairTypeText} × $${chairPrice.toFixed(2)} = $${chairCostCalc.toFixed(2)} (1 per guest)</div>
-            `;
+            let explanationHTML = '';
+            
+            if (currentTableType !== 'none') {
+                const tablePrice = PRICES.tables[currentTableType];
+                explanationHTML += `
+                    <div>• Tables: ${tables} ${tableTypeText} × $${tablePrice} = $${tableCostCalc} (${guests} guests ÷ ${currentGuestsPerTable} per table)</div>
+                `;
+            }
+            
+            if (currentChairType !== 'none') {
+                const chairPrice = PRICES.chairs[currentChairType];
+                explanationHTML += `
+                    <div>• Chairs: ${chairs} ${chairTypeText} × $${chairPrice.toFixed(2)} = $${chairCostCalc.toFixed(2)} (1 per guest)</div>
+                `;
+            }
             
             if (includeDanceFloor) {
                 explanationHTML += `
@@ -538,8 +594,13 @@
                 `;
             }
             
+            if (rentalSubtotal > 0) {
+                explanationHTML += `
+                    <div>• Damage Waiver: ${(PRICES.damageWaiverRate * 100).toFixed(0)}% on rentals = $${damageWaiver.toFixed(2)}</div>
+                `;
+            }
+            
             explanationHTML += `
-                <div>• Damage Waiver: ${(PRICES.damageWaiverRate * 100).toFixed(0)}% on rentals = $${damageWaiver.toFixed(2)}</div>
                 <div>• Tax: ${(PRICES.taxRate * 100).toFixed(0)}% = $${tax.toFixed(2)}</div>
             `;
             
