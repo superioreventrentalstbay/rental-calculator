@@ -164,11 +164,21 @@
     function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
 
     async function geocode(address) {
-        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1&countrycodes=ca`;
-        const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
-        const data = await res.json();
-        if (!data.length) return null;
-        return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon), display: data[0].display_name };
+        // Try multiple query variations to improve match rate
+        const queries = [address];
+        if (!address.toLowerCase().includes('canada')) queries.push(address + ', Canada');
+        if (!address.toLowerCase().includes('ontario') && !address.toLowerCase().includes(', on')) {
+            queries.push(address + ', Ontario, Canada');
+        }
+
+        for (const q of queries) {
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1&countrycodes=ca&addressdetails=1`;
+            const res = await fetch(url, { headers: { 'Accept-Language': 'en', 'User-Agent': 'SuperiorEventRentals/1.0' } });
+            const data = await res.json();
+            if (data.length) return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon), display: data[0].display_name };
+            await new Promise(r => setTimeout(r, 300)); // Nominatim rate limit
+        }
+        return null;
     }
 
     function haversineKm(lat1, lon1, lat2, lon2) {
@@ -194,10 +204,9 @@
             // Geocode origin (cached mentally — always same coords)
             const originCoords = { lat: 48.4077, lon: -89.2576 }; // 262 Windsor St, Thunder Bay
 
-            // Append Thunder Bay if not already included
             let query = raw;
-            if (!raw.toLowerCase().includes('thunder bay') && !raw.toLowerCase().includes('ontario') && !raw.toLowerCase().includes(', on')) {
-                query = raw + ', Thunder Bay, ON, Canada';
+            if (!raw.toLowerCase().includes('ontario') && !raw.toLowerCase().includes(', on')) {
+                query = raw + ', Ontario, Canada';
             }
 
             const dest = await geocode(query);
