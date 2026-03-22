@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Calculator - Superior Event Rentals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Roboto Condensed', sans-serif; }
+        .gradient-gold { background: linear-gradient(135deg, #B78738 0%, #6D4007 100%); }
+        .gradient-cream { background: linear-gradient(135deg, #C2B399 0%, #FFFFFF 100%); }
+        .result-hidden { display: none; }
+        #addressInput {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #C2B399;
+            border-radius: 12px;
+            font-size: 18px;
+            font-family: 'Roboto Condensed', sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        #addressInput:focus { border-color: #B78738; }
+        .spinner {
+            border: 3px solid #C2B399;
+            border-top: 3px solid #B78738;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body style="background: linear-gradient(to bottom right, #FFFFFF, #C2B399);">
+<div class="min-h-screen py-8 px-4">
+    <div class="max-w-3xl mx-auto">
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+
+            <!-- Header -->
+            <div class="gradient-gold text-white p-8 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-3">Delivery Calculator</h2>
+                <p class="text-lg opacity-90">Get an instant delivery estimate for Thunder Bay</p>
+            </div>
+
+            <div class="p-8">
+
+                <!-- Address input -->
+                <div class="mb-6">
+                    <label class="block text-xl font-bold mb-4 text-center" style="color:#0D1425;">
+                        Enter your delivery address or postal code
+                    </label>
+                    <input
+                        type="text"
+                        id="addressInput"
+                        placeholder="e.g. 1000 Fort William Rd, Thunder Bay or P7B 3A5"
+                        autocomplete="off"
+                    />
+                    <p class="text-xs mt-2 text-center" style="color:#6D4007;">Works best with a full address. Postal codes also accepted.</p>
+                </div>
+
+                <!-- Calculate button -->
+                <div class="mb-8 text-center">
+                    <button
+                        onclick="calculateDelivery()"
+                        class="gradient-gold text-white px-10 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition shadow-lg"
+                    >
+                        Calculate Delivery Cost
+                    </button>
+                </div>
+
+                <!-- Loading state -->
+                <div id="loadingState" class="text-center py-6 result-hidden">
+                    <div class="spinner mx-auto mb-3"></div>
+                    <div class="text-sm" style="color:#6D4007;">Calculating distance…</div>
+                </div>
+
+                <!-- Error state -->
+                <div id="errorState" class="result-hidden rounded-lg p-5 text-center" style="background:#FCEBEB; border:2px solid #F09595;">
+                    <div class="text-2xl mb-2">⚠️</div>
+                    <div class="font-bold mb-1" style="color:#A32D2D;">Address not found</div>
+                    <div class="text-sm" id="errorMsg" style="color:#791F1F;">Please try a more specific address or include the city name.</div>
+                </div>
+
+                <!-- Results -->
+                <div id="results" class="result-hidden">
+
+                    <!-- Distance card -->
+                    <div class="gradient-cream rounded-xl p-6 text-center mb-6" style="border:2px solid #B78738;">
+                        <div class="text-sm font-bold mb-1" style="color:#6D4007;">ROUND TRIP DISTANCE</div>
+                        <div class="text-5xl font-bold mb-1" style="color:#B78738;" id="displayKm">—</div>
+                        <div class="text-lg font-bold" style="color:#0D1425;">kilometres</div>
+                        <div class="text-sm mt-2" style="color:#6D4007;" id="oneWayNote">—</div>
+                    </div>
+
+                    <!-- Breakdown -->
+                    <div class="bg-white rounded-xl p-6 mb-6" style="border:2px solid #C2B399;">
+                        <h4 class="font-bold mb-4 text-center" style="color:#0D1425;">Cost Breakdown</h4>
+                        <div class="space-y-2 text-sm" style="color:#6D4007;">
+                            <div class="flex justify-between">
+                                <span id="distanceRow">Distance charge:</span>
+                                <span class="font-semibold" id="baseCharge">—</span>
+                            </div>
+                            <div class="flex justify-between border-t pt-2" style="border-color:#C2B399;">
+                                <span>Subtotal before tax:</span>
+                                <span class="font-semibold" id="beforeTax">—</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Tax (13% HST):</span>
+                                <span class="font-semibold" id="taxAmount">—</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- How calculated -->
+                    <div class="rounded-lg p-5 mb-6" style="background-color:#C2B399; border-left:4px solid #B78738;">
+                        <div class="flex items-start gap-3">
+                            <div class="text-xl">📊</div>
+                            <div class="text-sm" style="color:#6D4007;" id="calcExplanation">—</div>
+                        </div>
+                    </div>
+
+                    <!-- Total banner -->
+                    <div class="gradient-gold rounded-xl p-6 text-white shadow-xl mb-8">
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div class="text-center md:text-left">
+                                <div class="text-lg font-semibold mb-1">Estimated Delivery Cost</div>
+                                <div class="text-sm opacity-90" id="addressSummary">—</div>
+                                <div class="text-xs opacity-75 mt-2">* Estimate only. Final quote may vary.</div>
+                            </div>
+                            <div class="text-5xl font-bold" id="totalCost">—</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- CTA -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="tel:+18072764486"
+                       class="flex-1 gradient-gold text-white text-center px-8 py-5 rounded-xl font-bold text-lg hover:opacity-90 transition shadow-lg">
+                        📞 Call Now: (807) 276-4486
+                    </a>
+                    <a href="https://superioreventrentals.ca"
+                       class="flex-1 bg-white text-center px-8 py-5 rounded-xl font-bold text-lg hover:opacity-90 transition shadow-lg"
+                       style="color:#B78738; border:3px solid #B78738;">
+                        ← Back To Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="h-12"></div>
+</div>
+
+<script>
+    const ORIGIN = "262 Windsor Street, Thunder Bay, ON, Canada";
+    const RATE_PER_KM = 3;
+    const TAX_RATE = 0.13;
+
+    function show(id) { document.getElementById(id).classList.remove('result-hidden'); }
+    function hide(id) { document.getElementById(id).classList.add('result-hidden'); }
+    function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+    async function geocode(address) {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1&countrycodes=ca`;
+        const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+        const data = await res.json();
+        if (!data.length) return null;
+        return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon), display: data[0].display_name };
+    }
+
+    function haversineKm(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
+
+    async function calculateDelivery() {
+        const raw = document.getElementById('addressInput').value.trim();
+        if (!raw) {
+            alert('Please enter a delivery address or postal code.');
+            return;
+        }
+
+        hide('results');
+        hide('errorState');
+        show('loadingState');
+
+        try {
+            // Geocode origin (cached mentally — always same coords)
+            const originCoords = { lat: 48.4077, lon: -89.2576 }; // 262 Windsor St, Thunder Bay
+
+            // Append Thunder Bay if input looks like just a postal code or short string
+            let query = raw;
+            if (/^[A-Za-z]\d[A-Za-z]\s?\d[A-Za-z]\d$/.test(raw.replace(/\s/,''))) {
+                query = raw + ', Thunder Bay, ON, Canada';
+            } else if (!raw.toLowerCase().includes('thunder bay') && !raw.toLowerCase().includes('ontario') && !raw.toLowerCase().includes(', on')) {
+                query = raw + ', Thunder Bay, ON, Canada';
+            }
+
+            const dest = await geocode(query);
+
+            hide('loadingState');
+
+            if (!dest) {
+                document.getElementById('errorMsg').textContent = 'Could not find that address. Try adding "Thunder Bay, ON" or use a full street address.';
+                show('errorState');
+                return;
+            }
+
+            const oneWayKm = Math.round(haversineKm(originCoords.lat, originCoords.lon, dest.lat, dest.lon) * 10) / 10;
+            const roundTripKm = Math.round(oneWayKm * 2 * 10) / 10;
+
+            const base = roundTripKm * RATE_PER_KM;
+            const tax = base * TAX_RATE;
+            const total = base + tax;
+
+            // Shorten display address
+            const shortAddr = dest.display.split(',').slice(0,3).join(',');
+
+            document.getElementById('displayKm').textContent = roundTripKm.toFixed(1);
+            document.getElementById('oneWayNote').textContent = `(${oneWayKm.toFixed(1)} km one way × 2 trips)`;
+            document.getElementById('distanceRow').textContent = `${roundTripKm.toFixed(1)} km × $${RATE_PER_KM}/km:`;
+            document.getElementById('baseCharge').textContent = fmt(base);
+            document.getElementById('beforeTax').textContent = fmt(base);
+            document.getElementById('taxAmount').textContent = fmt(tax);
+            document.getElementById('totalCost').textContent = fmt(total);
+            document.getElementById('addressSummary').textContent = shortAddr;
+            document.getElementById('calcExplanation').innerHTML =
+                `<strong>How we calculated this:</strong><br>` +
+                `• One-way distance: ${oneWayKm.toFixed(1)} km<br>` +
+                `• Round trip: ${oneWayKm.toFixed(1)} km × 2 = ${roundTripKm.toFixed(1)} km<br>` +
+                `• Rate: ${roundTripKm.toFixed(1)} km × $${RATE_PER_KM}/km = ${fmt(base)}<br>` +
+                `• HST (13%): ${fmt(tax)}<br>` +
+                `• <em>Note: distance is straight-line. Actual driving may differ slightly.</em>`;
+
+            show('results');
+
+        } catch (err) {
+            hide('loadingState');
+            document.getElementById('errorMsg').textContent = 'Something went wrong. Please check your connection and try again.';
+            show('errorState');
+        }
+    }
+
+    // Allow Enter key
+    document.getElementById('addressInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') calculateDelivery();
+    });
+</script>
+</body>
+</html>
