@@ -50,15 +50,15 @@
                 <!-- Address input -->
                 <div class="mb-6">
                     <label class="block text-xl font-bold mb-4 text-center" style="color:#0D1425;">
-                        Enter your delivery address or postal code
+                        Enter your delivery address
                     </label>
                     <input
                         type="text"
                         id="addressInput"
-                        placeholder="e.g. 1000 Fort William Rd, Thunder Bay or P7B 3A5"
+                        placeholder="e.g. 1000 Fort William Rd, Thunder Bay, ON"
                         autocomplete="off"
                     />
-                    <p class="text-xs mt-2 text-center" style="color:#6D4007;">Works best with a full address. Postal codes also accepted.</p>
+                    <p class="text-xs mt-2 text-center" style="color:#6D4007;">Enter a full street address for the most accurate estimate.</p>
                 </div>
 
                 <!-- Calculate button -->
@@ -194,11 +194,9 @@
             // Geocode origin (cached mentally — always same coords)
             const originCoords = { lat: 48.4077, lon: -89.2576 }; // 262 Windsor St, Thunder Bay
 
-            // Append Thunder Bay if input looks like just a postal code or short string
+            // Append Thunder Bay if not already included
             let query = raw;
-            if (/^[A-Za-z]\d[A-Za-z]\s?\d[A-Za-z]\d$/.test(raw.replace(/\s/,''))) {
-                query = raw + ', Thunder Bay, ON, Canada';
-            } else if (!raw.toLowerCase().includes('thunder bay') && !raw.toLowerCase().includes('ontario') && !raw.toLowerCase().includes(', on')) {
+            if (!raw.toLowerCase().includes('thunder bay') && !raw.toLowerCase().includes('ontario') && !raw.toLowerCase().includes(', on')) {
                 query = raw + ', Thunder Bay, ON, Canada';
             }
 
